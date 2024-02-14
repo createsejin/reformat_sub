@@ -18,7 +18,8 @@ pub fn save_file(input_path: &str, lines: &Vec<String>) -> io::Result<()> {
     Ok(())
 }
 fn open_file() -> io::Result<(Vec<String>, String)> {
-    print!("input absolute file path > ");
+    // TODO: 이 부분에서 상대 경로 path에 대해서도 작동하게 만들어야함.
+    print!("input file path > ");
     io::stdout().flush().unwrap();
 
     let mut input = String::new();
@@ -42,7 +43,14 @@ fn open_file() -> io::Result<(Vec<String>, String)> {
         format!(r"{}", input)
     };
 
-    let lines = read_file(&file_path)?;
+    let path = Path::new(&file_path);
+    // canonicalize() 함수를 통해 상대 경로를 절대 경로로 변환한다.
+    let absolute_path = path.canonicalize()?;
+    // to_string_lossy() 함수는 절대 경로를 유효한 UTF-8 문자열로 변환하고, to_string()을 통해
+    // 함수의 결과를 String 타입으로 변환한다.
+    // to_string_lossy() 함수는 유효하지 않은 유니코드 문자가 있을때에는 �로 변환하고 Owned 타입을 반환한다.
+    // 유효한 유니코드 문자가 있을때에는 Borrowed 타입을 반환한다.
+    let lines = read_file(&absolute_path.to_string_lossy().to_string())?;
 
     Ok((lines, file_path))
 }
