@@ -136,7 +136,7 @@ fn fix_sub_process() {
 }
 
 pub fn commander() {
-    crate::process::set_debug(false);
+    crate::process::set_debug(true);
     loop {
         let command = get_input("cmd> ");
         match command.as_str() {
