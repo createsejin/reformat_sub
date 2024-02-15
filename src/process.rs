@@ -14,6 +14,7 @@ pub fn get_debug() -> bool {
     let debug = DEBUG.lock().unwrap();
     *debug
 }
+
 pub fn read_file(input_path: &String) -> io::Result<Vec<String>> {
     let path = Path::new(input_path);
     let file = File::open(&path)?;
@@ -27,6 +28,7 @@ pub fn read_file(input_path: &String) -> io::Result<Vec<String>> {
     }
     Ok(lines)
 }
+
 pub fn output_of_vec(lines: &Vec<String>, count: usize) {
     if count > lines.len() {
         println!("count is bigger than lines.len()");
@@ -37,6 +39,26 @@ pub fn output_of_vec(lines: &Vec<String>, count: usize) {
         println!("{}", lines[i]);
     }
 }
+
+pub fn fix_sub_vec(lines: &mut Vec<String>) -> io::Result<()> {
+    let debug = get_debug();
+    let year_reg = Regex::new(r"(^(\d{1,5})(년)$)").unwrap();
+    for line in lines.iter_mut() {
+        if let Some(caps) = year_reg.captures(line) {
+            if let Some(mat) = caps.get(1) {
+                if debug { println!("{} -> year", mat.as_str().to_string()) }
+                *line = mat.as_str().to_string();
+            }
+        }
+    }
+    if debug {
+        for line in lines.iter() {
+            println!("{}", line);
+        }
+    }
+    Ok(())
+}
+
 pub fn replace_vec(lines: &mut Vec<String>) {
     let debug = DEBUG.lock().unwrap();
     let reg_time_line = Regex::new(r"(^\d{2}:\d{2}:\d{2},\d{3} --> \d{2}:\d{2}:\d{2},\d{3}$)")
