@@ -42,7 +42,7 @@ pub fn output_of_vec(lines: &Vec<String>, count: usize) {
 
 pub fn fix_sub_vec(lines: &mut Vec<String>) -> io::Result<()> {
     let debug = get_debug();
-    let year_reg = Regex::new(r"(^(\d{1,5})(년)$)").unwrap();
+    let year_reg = Regex::new(r"^(\d{4,5})(년)$").unwrap();
     for line in lines.iter_mut() {
         if let Some(caps) = year_reg.captures(line) {
             if let Some(mat) = caps.get(1) {
