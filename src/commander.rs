@@ -76,12 +76,12 @@ fn open_and_read_file() -> io::Result<(Vec<String>, String)> {
 fn reformat_process() {
     #[allow(unused_assignments)]
     let mut is_success_replace: bool = false;
-    let debug = crate::process::get_debug();
+    let debug01 = crate::process::get_debug01();
     match open_and_read_file() {
         Ok((mut lines, file_path)) => {
             println!("Successfully opened file. \u{25A0}");
             // Do something with lines
-            if debug {
+            if debug01 {
                 output_of_vec(&lines, 150);
                 println!("------------------------------------------------------------");
             }
@@ -91,7 +91,7 @@ fn reformat_process() {
                 "y" => {
                     replace_vec(&mut lines);
                     is_success_replace = true;
-                    if debug {
+                    if debug01 {
                         println!("output of lines:");
                         output_of_vec(&lines, 200);
                         println!("------------------------------------------------------------");
@@ -162,7 +162,6 @@ fn fix_sub_process() {
 }
 
 pub fn commander() {
-    crate::process::set_debug(true);
     loop {
         let command = get_input("cmd> ");
         match command.as_str() {

@@ -4,14 +4,14 @@ use std::path::Path;
 use regex::Regex;
 use std::sync::Mutex;
 lazy_static::lazy_static! {
-    static ref DEBUG: Mutex<bool> = Mutex::new(false);
+    static ref DEBUG01: Mutex<bool> = Mutex::new(false);
 }
-pub fn set_debug(value: bool) {
-    let mut debug = DEBUG.lock().unwrap();
+pub fn set_debug01(value: bool) {
+    let mut debug = DEBUG01.lock().unwrap();
     *debug = value;
 }
-pub fn get_debug() -> bool {
-    let debug = DEBUG.lock().unwrap();
+pub fn get_debug01() -> bool {
+    let debug = DEBUG01.lock().unwrap();
     *debug
 }
 
@@ -41,7 +41,7 @@ pub fn output_of_vec(lines: &Vec<String>, count: usize) {
 }
 
 pub fn fix_sub_vec(lines: &mut Vec<String>) -> io::Result<()> {
-    let debug = get_debug();
+    let debug = get_debug01();
     let year_reg = Regex::new(r"^(\d{4,5})(년)$").unwrap();
     for line in lines.iter_mut() {
         if let Some(caps) = year_reg.captures(line) {
@@ -60,7 +60,7 @@ pub fn fix_sub_vec(lines: &mut Vec<String>) -> io::Result<()> {
 }
 
 pub fn replace_vec(lines: &mut Vec<String>) {
-    let debug = DEBUG.lock().unwrap();
+    let debug01 = DEBUG01.lock().unwrap();
     let reg_time_line = Regex::new(r"(^\d{2}:\d{2}:\d{2},\d{3} --> \d{2}:\d{2}:\d{2},\d{3}$)")
         .unwrap();
     let normal_case = Regex::new(r"(^\d+$)").unwrap();
@@ -69,19 +69,19 @@ pub fn replace_vec(lines: &mut Vec<String>) {
     let mut i = 0;
     while i < lines.len() {
         if reg_time_line.is_match(&lines[i]) {
-            if *debug {
+            if *debug01 {
                 println!("{} -> time", lines[i]);
             }
         } else if normal_case.is_match(&lines[i]) {
             match lines[i].parse::<u32>() {
-                Ok(number) => { if *debug {
+                Ok(number) => { if *debug01 {
                     println!("{} -> normal, Number: {}", lines[i], number) } },
                 Err(_) => println!("{} -> Failed to parse number \u{25A1}", lines[i]),
             }
         } else if let Some(caps) = end_case.captures(&lines[i]) {
             if let Some(mat) = caps.get(1) {
                 match mat.as_str().parse::<u32>() {
-                    Ok(number) => { if *debug {
+                    Ok(number) => { if *debug01 {
                         println!("{} -> end, Number: {}", lines[i], number) } },
                     Err(_) => println!("{} -> Failed to parse number \u{25A1}", lines[i]),
                 }
@@ -92,7 +92,7 @@ pub fn replace_vec(lines: &mut Vec<String>) {
                 i += 1; // Skip the newly added line
             }
         } else {
-            if *debug { println!("{} -> no match", lines[i]) };
+            if *debug01 { println!("{} -> no match", lines[i]) };
             if i < lines.len() - 1 {
                 lines.insert(i + 1, String::from(""));
                 i += 1; // Skip the newly added line
